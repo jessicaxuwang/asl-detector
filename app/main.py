@@ -5,7 +5,7 @@ import numpy as np
 from werkzeug.utils import secure_filename
 from flask import Flask, flash, request, redirect, url_for, render_template
 from flask import send_from_directory
-from ai import get_yolo_net, yolo_forward, yolo_save_img
+from ai2 import get_yolo_net, yolo_forward, yolo_save_img
 from utils import get_base_url, allowed_file, and_syntax
 
 # setup the webserver
@@ -14,7 +14,7 @@ from utils import get_base_url, allowed_file, and_syntax
     port may need to be changed if there are multiple flask servers running on same server
     comment out below three lines of code when ready for production deployment
 '''
-port = 12345
+port = 12379
 base_url = get_base_url(port)
 app = Flask(__name__, static_url_path=base_url+'static')
 
@@ -42,7 +42,7 @@ net = get_yolo_net(cfg_path, weights_path)
 #@app.route('/')
 @app.route(base_url)
 def home():
-    return render_template('home.html')
+    return render_template('Home.html')
 
 #@app.route('/', methods=['POST'])
 @app.route(base_url, methods=['POST'])
@@ -88,13 +88,23 @@ def results(filename):
         labels = set(labels)
         labels = [plant.capitalize() for plant in labels]
         labels = and_syntax(labels)
-        return render_template('results.html', confidences=format_confidences, labels=labels, 
+        return render_template('Results.html', confidences=format_confidences, labels=labels, 
             old_filename = filename, 
             filename=new_filename) 
     else:
         found = False
         # replace 'Objects' with whatever you are trying to detect
         return render_template('results.html', labels='No Objects', old_filename=filename, filename=filename) 
+
+#@app.route('/how-it-works')
+@app.route(base_url + 'How-it-works.html')
+def howitworks():
+    return render_template('How-it-works.html') 
+
+#@app.route('/our-team')
+@app.route(base_url + 'Our-Team.html')
+def ourteam():
+    return render_template('Our-Team.html')
 
 #@app.route('/files/<path:filename>')
 @app.route(base_url + '/files/<path:filename>')
@@ -106,7 +116,7 @@ if __name__ == "__main__":
     coding center code
     '''
     # IMPORTANT: change the cocalcx.ai-camp.org to the site where you are editing this file.
-    website_url = 'cocalcx.ai-camp.org'
+    website_url = 'cocalc6.ai-camp.org'
     print(f"Try to open\n\n    https://{website_url}" + base_url + '\n\n')
 
     # remove debug=True when deploying it

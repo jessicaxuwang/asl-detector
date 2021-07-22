@@ -14,15 +14,15 @@ from utils import get_base_url, allowed_file, and_syntax
     port may need to be changed if there are multiple flask servers running on same server
     comment out below three lines of code when ready for production deployment
 '''
-port = 12379
-base_url = get_base_url(port)
-app = Flask(__name__, static_url_path=base_url+'static')
+#port = 12379
+#base_url = get_base_url(port)
+#app = Flask(__name__, static_url_path=base_url+'static')
 
 '''
     cv scaffold code
     uncomment below line when ready for production deployment
 '''
-# app = Flask(__name__)
+app = Flask(__name__)
 
 UPLOAD_FOLDER = 'images'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -39,13 +39,13 @@ cfg_path = os.path.join('yolo', 'yolo.cfg')
 net = get_yolo_net(cfg_path, weights_path)
 
 
-#@app.route('/')
-@app.route(base_url)
+@app.route('/')
+#@app.route(base_url)
 def home():
     return render_template('Home.html')
 
-#@app.route('/', methods=['POST'])
-@app.route(base_url, methods=['POST'])
+@app.route('/', methods=['POST'])
+#@app.route(base_url, methods=['POST'])
 def home_post():
     # check if the post request has the file part
     if 'file' not in request.files:
@@ -65,8 +65,8 @@ def home_post():
         return redirect(url_for('results', filename=filename))
 
 
-#@app.route('/uploads/<filename>')
-@app.route(base_url + '/uploads/<filename>')
+@app.route('/uploads/<filename>')
+#@app.route(base_url + '/uploads/<filename>')
 def results(filename): 
     image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     image = cv2.imread(image_path)
@@ -96,18 +96,18 @@ def results(filename):
         # replace 'Objects' with whatever you are trying to detect
         return render_template('results.html', labels='No Objects', old_filename=filename, filename=filename) 
 
-#@app.route('/how-it-works')
-@app.route(base_url + 'How-it-works.html')
+@app.route('/how-it-works')
+#@app.route(base_url + 'How-it-works.html')
 def howitworks():
     return render_template('How-it-works.html') 
 
-#@app.route('/our-team')
-@app.route(base_url + 'Our-Team.html')
+@app.route('/our-team')
+#@app.route(base_url + 'Our-Team.html')
 def ourteam():
     return render_template('Our-Team.html')
 
-#@app.route('/files/<path:filename>')
-@app.route(base_url + '/files/<path:filename>')
+@app.route('/files/<path:filename>')
+#@app.route(base_url + '/files/<path:filename>')
 def files(filename):
     return send_from_directory(UPLOAD_FOLDER, filename, as_attachment=True)
 
